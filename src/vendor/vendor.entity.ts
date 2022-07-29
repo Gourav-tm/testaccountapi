@@ -1,44 +1,44 @@
-import { Client } from "src/client/client.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Client } from 'src/client/client.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Vendor {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
-    name:string;
-    
-    @Column()
-    parentId: string;
+  @Column()
+  name: string;
 
-    @Column({ unique: true })
-    emailId: string;
+  @Column()
+  parentId: string;
 
-    @Column()
-    websiteUrl: string;
+  @Column({ unique: true })
+  emailId: string;
 
-    @Column()
-    address1: string;
+  @Column()
+  websiteUrl: string;
 
-    @Column()
-    address2: string;
+  @Column()
+  address1: string;
 
-    @Column()
-    countryId: number;
+  @Column()
+  address2: string;
 
-    @Column()
-    stateId: number;
+  @Column()
+  countryId: number;
 
-    @Column()
-    cityId: number;
+  @Column()
+  stateId: number;
 
-    @Column()
-    zipCode:string;
+  @Column()
+  cityId: number;
 
-    @OneToOne(() => Client, (cli) => cli.vendor)
-    client: Client;
+  @Column()
+  zipCode: string;
 
-    @OneToOne(() => Client, (cli) => cli.parentVendor)
-    parentVendorClient: Client;
+  @OneToOne(() => Client, (cli) => cli.vendor)
+  client: Client;
+
+  @OneToOne(() => Client, (cli) => cli.parentVendor)
+  parentVendorClient: Client;
 }

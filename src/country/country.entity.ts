@@ -1,17 +1,16 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({name:"countries"})
+@Entity({ name: 'countries' })
 export class Country {
-    
-    @PrimaryColumn()
-    id: number;
+  @PrimaryColumn()
+  id: number;
 
-    @Column()
-    shortname:string;
+  @Column()
+  shortname: string;
 
-    @Column()
-    name:string;
+  @Column()
+  name: string;
 
-    @Column()
-    phonecode:string;
+  @Column()
+  phonecode: string;
 }

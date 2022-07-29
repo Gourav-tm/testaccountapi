@@ -7,20 +7,19 @@ import { CreateClientDto } from './dto/client-create.dto';
 @Controller('client')
 @UseGuards(AuthGuard())
 export class ClientController {
+  constructor(private readonly clientService: ClientService) {}
 
-    constructor(private readonly clientService: ClientService) {
+  @Get()
+  getAllClients() {
+    return this.clientService.findAll();
+  }
 
-    }
-
-    @Get()
-    getAllClients() {
-        return this.clientService.findAll();
-    }
-
-    @Post()
-    createClient(@Body() createClientDto: CreateClientDto, @GetUser() getUser): Promise<void> {
-        console.log(getUser);
-        return this.clientService.createClient(createClientDto);
-    }
-
+  @Post()
+  createClient(
+    @Body() createClientDto: CreateClientDto,
+    @GetUser() getUser,
+  ): Promise<void> {
+    console.log(getUser);
+    return this.clientService.createClient(createClientDto);
+  }
 }

@@ -4,13 +4,10 @@ import { StateService } from './state.service';
 
 @Controller('state')
 export class StateController {
-    constructor(private readonly stateService: StateService) {
+  constructor(private readonly stateService: StateService) {}
 
-    }
-
-    @Get("/:countryId")
-    getAll(@Param('countryId') countryId:number): Promise<State[]> {
-        return this.stateService.findAll(countryId);
-    }
-
+  @Get('/:countryId')
+  getAll(@Param('countryId') countryId: number): Promise<State[]> {
+    return this.stateService.findAll(countryId);
+  }
 }

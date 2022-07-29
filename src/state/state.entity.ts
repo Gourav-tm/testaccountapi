@@ -1,19 +1,18 @@
-import { Country } from "src/country/country.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Country } from 'src/country/country.entity';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'states' })
 export class State {
+  @PrimaryColumn()
+  id: number;
 
-    @PrimaryColumn()
-    id: number;
+  @Column()
+  name: string;
 
-    @Column()
-    name: string;
+  @Column()
+  country_id: number;
 
-    @Column()
-    country_id: number;
-
-    @OneToOne(() => Country, country => country.id)
-    @JoinColumn({ name: 'country_id' })
-    country: Country;
+  @OneToOne(() => Country, (country) => country.id)
+  @JoinColumn({ name: 'country_id' })
+  country: Country;
 }

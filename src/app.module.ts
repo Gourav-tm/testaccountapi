@@ -1,6 +1,4 @@
-
-
-import { Module, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/user.entity';
@@ -16,8 +14,7 @@ import { StateModule } from './state/state.module';
 import { State } from './state/state.entity';
 import { CityModule } from './city/city.module';
 import { City } from './city/city.entity';
-import { LoggerModule, Logger } from 'nestjs-pino'
-import { CountryController } from './country/country.controller';
+import { LoggerModule } from 'nestjs-pino';
 const levels = {
   emerg: 80,
   alert: 70,
@@ -32,11 +29,12 @@ const levels = {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.stage.${process.env.STAGE.trim()}.env`]
+      envFilePath: [`.env.stage.${process.env.STAGE.trim()}.env`],
     }),
     LoggerModule.forRoot({
       pinoHttp: {
-        name: 'add some name to every JSON line', level: 'info',
+        name: 'add some name to every JSON line',
+        level: 'info',
         customLevels: levels,
         useOnlyCustomLevels: true,
         formatters: {
@@ -45,18 +43,7 @@ const levels = {
           },
         },
       },
-      forRoutes: [CountryController],
-      exclude: [{ method: RequestMethod.ALL, path: 'check' }]
     }),
-    /*    TypeOrmModule.forRoot({
-         type: "mysql",
-         host: '45.56.125.158',
-         port: 3306,
-         username: 'sqluser',
-         password: 'Gourav#88',
-         database: 'account_chex',
-         entities: [User, Vendor, Client]
-       }), */
     AuthModule,
     ProjectModule,
     VendorModule,
@@ -64,22 +51,28 @@ const levels = {
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => {
-        console.log("TEst", configService.get("DB_PASSWORD"), process.env.DB_HOST);
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<TypeOrmModuleOptions> => {
+        console.log(
+          'TEst',
+          configService.get('DB_PASSWORD'),
+          process.env.DB_HOST,
+        );
         return {
-          type: "mysql",
-          host: configService.get("DB_HOST"),
-          port: configService.get("DB_PORT"),
-          username: configService.get("DB_USERNAME"),
-          password: configService.get("DB_PASSWORD"),
-          database: configService.get("DB_NAME"),
-          entities: [User, Vendor, Client, Country, State, City]
-        }
-      }
+          type: 'mysql',
+          host: configService.get('DB_HOST'),
+          port: configService.get('DB_PORT'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_NAME'),
+          entities: [User, Vendor, Client, Country, State, City],
+        };
+      },
     }),
     CountryModule,
     StateModule,
     CityModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

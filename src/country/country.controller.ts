@@ -4,15 +4,13 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { CountryService } from './country.service';
 
 @Controller('country')
-
 export class CountryController {
+  constructor(private readonly countryService: CountryService) {}
 
-    constructor(private readonly countryService: CountryService) { }
-
-    @Get()
-    @UseGuards(AuthGuard())
-    getAllCountries(@GetUser() getUser) {
-        console.log(getUser);
-        return this.countryService.findAll();
-    }
+  @Get()
+  @UseGuards(AuthGuard())
+  getAllCountries(@GetUser() getUser) {
+    console.log(getUser);
+    return this.countryService.findAll();
+  }
 }

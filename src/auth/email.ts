@@ -50,36 +50,37 @@ import * as path from 'path';
     //const result = await transporter.sendMail(mailOptions);
 } */
 
-
 export async function sendMail(option) {
-    const filePath = path.join(__dirname, '../../public/assests/email-login-template.html');
-   
-   console.log(filePath);
-    const source = fs.readFileSync(filePath, 'utf-8').toString();
-    const template = handlebars.compile(source);
-    /* const replacements = {
+  const filePath = path.join(
+    __dirname,
+    '../../public/assests/email-login-template.html',
+  );
+
+  console.log(filePath);
+  const source = fs.readFileSync(filePath, 'utf-8').toString();
+  const template = handlebars.compile(source);
+  /* const replacements = {
       username: "Umut YEREBAKMAZ"
     }; */
-    const htmlToSend = template(option.html);
-    const transporter = nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 2525,
-        auth: {
-            user: "2166b35e300b8d",
-            pass: "2e5dcf28b6937c"
-        }
-    });
+  const htmlToSend = template(option.html);
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.mailtrap.io',
+    port: 2525,
+    auth: {
+      user: '2166b35e300b8d',
+      pass: '2e5dcf28b6937c',
+    },
+  });
 
-    const mailOptions = {
-        from: 'Gourav Jhangikhel <gourav.j@gmail.com>',
-        to: option.email,
-        subject: option.subject,
-        message: option.message,
-        html: htmlToSend
-    }
-    
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", "https://mailtrap.io/inboxes/test/messages/");
-  
-  }
+  const mailOptions = {
+    from: 'Gourav Jhangikhel <gourav.j@gmail.com>',
+    to: option.email,
+    subject: option.subject,
+    message: option.message,
+    html: htmlToSend,
+  };
+
+  const info = await transporter.sendMail(mailOptions);
+  console.log('Message sent: %s', info.messageId);
+  console.log('Preview URL: %s', 'https://mailtrap.io/inboxes/test/messages/');
+}

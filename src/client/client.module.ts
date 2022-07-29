@@ -6,8 +6,11 @@ import { Client } from './client.entity';
 import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Client]), PassportModule.register({ defaultStrategy: 'jwt' })],
+  imports: [
+    TypeOrmModule.forFeature([Client]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+  ],
   providers: [ClientService],
-  controllers: [ClientController]
+  controllers: [ClientController],
 })
-export class ClientModule { }
+export class ClientModule {}
