@@ -13,23 +13,55 @@ export class VendorService {
   constructor(
     @InjectRepository(Vendor) private vendorsRepository: Repository<Vendor>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
   async findAll(query, userId): Promise<{ data; count }> {
     const take = query.take || 20;
     const skip = query.skip || 0;
 
-    const [result, total] = await this.vendorsRepository.findAndCount({
-      take,
-      skip,
-      relations: ['country', 'state', 'city', 'user'],
-      where: {
-        userId,
-      },
-    });
+    const [result,total] = await this.dataSource
+      .getRepository(Vendor)
+      .createQueryBuilder('vendor')
+      .select(['vendor.id', 'vendor.name', 'vendor.emailId', 'vendor.websiteUrl',
+        'vendor.address1', 'vendor.address2', 'vendor.zipCode', 'vendor.creationTime',
+        'vendor.updationTime', 'country.id', 'state.id', 'city.id', 'user.id',
+        'country.name', 'state.name', 'city.name', 'user.username'])
+      .where('vendor.userId =:userId', { userId })
+      .leftJoin('vendor.country', 'country')
+      .leftJoin('vendor.state', 'state')
+      .leftJoin('vendor.city', 'city')
+      .leftJoin('vendor.user', 'user')
+      .take(take)
+      .skip(skip)
+      .orderBy('vendor.name', 'ASC')
+      .cache(true)
+      .getManyAndCount();
+      
+    /* const total = await this.dataSource
+      .getRepository(Vendor)
+      .createQueryBuilder('vendor')
+      .where('vendor.userId =:userId', { userId })
+      .getCount(); */
+
     return {
       data: result,
       count: total,
     };
+  }
+
+  async findVendorByVendorId(vendorId): Promise<Vendor> {
+    return await this.dataSource
+      .getRepository(Vendor)
+      .createQueryBuilder('vendor')
+      .select(['vendor.id', 'vendor.name', 'vendor.emailId', 'vendor.websiteUrl',
+        'vendor.address1', 'vendor.address2', 'vendor.zipCode', 'vendor.creationTime',
+        'vendor.updationTime', 'country.id', 'state.id', 'city.id', 'user.id',
+        'country.name', 'state.name', 'city.name', 'user.username'])
+      .where('vendor.id =:vendorId', { vendorId })
+      .leftJoin('vendor.country', 'country')
+      .leftJoin('vendor.state', 'state')
+      .leftJoin('vendor.city', 'city')
+      .leftJoin('vendor.user', 'user')
+      .getOne();
   }
 
   async findAllParent(userId): Promise<Vendor[]> {

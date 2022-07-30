@@ -18,7 +18,7 @@ import { VendorService } from './vendor.service';
 @Controller('vendor')
 @UseGuards(AuthGuard())
 export class VendorController {
-  constructor(private readonly vendorService: VendorService) {}
+  constructor(private readonly vendorService: VendorService) { }
   @Get()
   @HttpCode(HttpStatus.OK)
   getVendor(
@@ -26,6 +26,12 @@ export class VendorController {
     @GetUser() getUser,
   ): Promise<{ data; count }> {
     return this.vendorService.findAll(pageOptionsDto, getUser.id);
+  }
+
+  @Get('/:vendorId')
+  @HttpCode(HttpStatus.OK)
+  getVendorById(@Param('vendorId') vendorId: string): Promise<Vendor> {
+    return this.vendorService.findVendorByVendorId(vendorId);
   }
 
   @Get('/parent')
