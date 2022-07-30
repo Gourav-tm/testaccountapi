@@ -14,12 +14,17 @@ export class VendorService {
     @InjectRepository(Vendor) private vendorsRepository: Repository<Vendor>,
     private readonly dataSource: DataSource,
   ) {}
-  async findAll(query): Promise<{ data; count }> {
-    const take = query.take || 10;
+  async findAll(query, userId): Promise<{ data; count }> {
+    const take = query.take || 20;
     const skip = query.skip || 0;
+
     const [result, total] = await this.vendorsRepository.findAndCount({
       take,
       skip,
+      relations: ['country', 'state', 'city', 'user'],
+      where: {
+        userId,
+      },
     });
     return {
       data: result,
@@ -27,12 +32,13 @@ export class VendorService {
     };
   }
 
-  async findAllParent(): Promise<Vendor[]> {
+  async findAllParent(userId): Promise<Vendor[]> {
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
       .select(['vendor.parentId', 'vendor.name'])
       .where('vendor.parentId IS NOT NULL')
+      .andWhere('vendor.userId = :userId', { userId })
       .distinct(true)
       .printSql()
       .getRawMany();
@@ -59,6 +65,8 @@ export class VendorService {
       stateId,
       cityId,
       zipCode,
+      userId,
+      creationTime,
     } = createVendorDto;
     try {
       const existingVendor = await this.vendorsRepository.findOne({
@@ -69,6 +77,7 @@ export class VendorService {
       if (existingVendor) {
         throw new ConflictException('Vendor name is already exist');
       }
+
       const vendor = this.vendorsRepository.create({
         name,
         parentId: parentVendorId,
@@ -80,6 +89,8 @@ export class VendorService {
         stateId,
         cityId,
         zipCode,
+        userId,
+        creationTime,
       });
       await this.vendorsRepository.save(vendor);
     } catch (e) {

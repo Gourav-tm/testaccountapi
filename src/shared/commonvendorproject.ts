@@ -59,4 +59,10 @@ export class CommonVendorProject {
   @MaxLength(7)
   @IsNotEmpty()
   zipCode: string;
+
+  creationTime: Date = new Date();
+
+  updationTime: Date = new Date();
+
+  userId: string;
 }
