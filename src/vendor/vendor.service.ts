@@ -34,6 +34,7 @@ export class VendorService {
       .select(['vendor.parentId', 'vendor.name'])
       .where('vendor.parentId IS NOT NULL')
       .distinct(true)
+      .printSql()
       .getRawMany();
   }
 

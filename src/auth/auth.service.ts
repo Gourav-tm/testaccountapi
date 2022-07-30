@@ -47,6 +47,7 @@ export class AuthService {
         throw new NotFoundException('User not found');
       }
     } catch (e) {
+      console.log(e);
       if (e.status === 401) {
         throw new UnauthorizedException(e.response.message);
       } else if (e.status === 404) {
