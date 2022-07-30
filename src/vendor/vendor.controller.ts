@@ -39,6 +39,7 @@ export class VendorController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   createVendor(@Body() createVendordto: CreateVendorDto): Promise<void> {
     return this.vendorService.createVendor(createVendordto);
   }
