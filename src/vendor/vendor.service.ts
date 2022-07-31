@@ -30,7 +30,6 @@ export class VendorService {
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
       .leftJoin('vendor.user', 'user')
-      .leftJoin('vendor.parentVendor', 'vendor')
       .take(take)
       .skip(skip)
       .orderBy('vendor.name', 'ASC')
