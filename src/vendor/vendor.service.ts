@@ -30,6 +30,7 @@ export class VendorService {
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
       .leftJoin('vendor.user', 'user')
+      .leftJoin('vendor.parentVendor', 'vendor')
       .take(take)
       .skip(skip)
       .orderBy('vendor.name', 'ASC')
@@ -65,6 +66,7 @@ export class VendorService {
   }
 
   async findAllParent(userId): Promise<Vendor[]> {
+    console.log(userId);
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')

@@ -74,7 +74,12 @@ export class Vendor extends BaseEntity {
   @JoinColumn()
   city: City;
 
-  @OneToOne(() => User, (cli) => cli.id, {})
+  @OneToOne(() => User, (cli) => cli.id)
   @JoinColumn()
   user: User;
+
+  
+  @OneToOne(() => Vendor, (cli) => cli.id)
+  @JoinColumn()
+  parentVendor: Vendor;
 }

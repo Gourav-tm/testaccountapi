@@ -28,17 +28,19 @@ export class VendorController {
     return this.vendorService.findAll(pageOptionsDto, getUser.id);
   }
 
+  @Get('/parent')
+  @HttpCode(HttpStatus.OK)
+  getAllParentVendor(@GetUser() getUser): Promise<Vendor[]> {
+    return this.vendorService.findAllParent(getUser.id);
+  }
+  
   @Get('/:vendorId')
   @HttpCode(HttpStatus.OK)
   getVendorById(@Param('vendorId') vendorId: string): Promise<Vendor> {
     return this.vendorService.findVendorByVendorId(vendorId);
   }
 
-  @Get('/parent')
-  @HttpCode(HttpStatus.OK)
-  getAllParentVendor(@GetUser() getUser): Promise<Vendor[]> {
-    return this.vendorService.findAllParent(getUser.id);
-  }
+ 
 
   @Get('/child/:parentId')
   @HttpCode(HttpStatus.OK)
