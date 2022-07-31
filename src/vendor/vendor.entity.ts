@@ -8,6 +8,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -78,8 +79,7 @@ export class Vendor extends BaseEntity {
   @JoinColumn()
   user: User;
 
-  
-  @OneToOne(() => Vendor, (cli) => cli.id)
-  @JoinColumn()
-  parentVendor: Vendor;
+  @ManyToOne(() => Vendor, (service) => service.parentId)
+  @JoinColumn({ name: 'parentId' })
+  parent: Vendor;
 }

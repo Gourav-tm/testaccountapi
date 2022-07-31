@@ -13,34 +13,44 @@ export class VendorService {
   constructor(
     @InjectRepository(Vendor) private vendorsRepository: Repository<Vendor>,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
   async findAll(query, userId): Promise<{ data; count }> {
     const take = query.take || 20;
     const skip = query.skip || 0;
 
-    const [result,total] = await this.dataSource
+    const [result, total] = await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
-      .select(['vendor.id', 'vendor.name', 'vendor.emailId', 'vendor.websiteUrl',
-        'vendor.address1', 'vendor.address2', 'vendor.zipCode', 'vendor.creationTime',
-        'vendor.updationTime', 'country.id', 'state.id', 'city.id', 'user.id',
-        'country.name', 'state.name', 'city.name', 'user.username'])
+      .select([
+        'vendor.id',
+        'vendor.name',
+        'vendor.emailId',
+        'vendor.websiteUrl',
+        'vendor.address1',
+        'vendor.address2',
+        'vendor.zipCode',
+        'vendor.creationTime',
+        'vendor.updationTime',
+        'country.id',
+        'state.id',
+        'city.id',
+        'user.id',
+        'country.name',
+        'state.name',
+        'city.name',
+        'user.username',
+      ])
       .where('vendor.userId =:userId', { userId })
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
       .leftJoin('vendor.user', 'user')
+      .leftJoinAndSelect('vendor.parent', 'vendor as v2')
       .take(take)
       .skip(skip)
       .orderBy('vendor.name', 'ASC')
       .cache(true)
       .getManyAndCount();
-      
-    /* const total = await this.dataSource
-      .getRepository(Vendor)
-      .createQueryBuilder('vendor')
-      .where('vendor.userId =:userId', { userId })
-      .getCount(); */
 
     return {
       data: result,
@@ -52,15 +62,31 @@ export class VendorService {
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
-      .select(['vendor.id', 'vendor.name', 'vendor.emailId', 'vendor.websiteUrl',
-        'vendor.address1', 'vendor.address2', 'vendor.zipCode', 'vendor.creationTime',
-        'vendor.updationTime', 'country.id', 'state.id', 'city.id', 'user.id',
-        'country.name', 'state.name', 'city.name', 'user.username'])
+      .select([
+        'vendor.id',
+        'vendor.name',
+        'vendor.emailId',
+        'vendor.websiteUrl',
+        'vendor.address1',
+        'vendor.address2',
+        'vendor.zipCode',
+        'vendor.creationTime',
+        'vendor.updationTime',
+        'country.id',
+        'state.id',
+        'city.id',
+        'user.id',
+        'country.name',
+        'state.name',
+        'city.name',
+        'user.username',
+      ])
       .where('vendor.id =:vendorId', { vendorId })
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
       .leftJoin('vendor.user', 'user')
+      .leftJoinAndSelect('vendor.parent', 'vendor as v2')
       .getOne();
   }
 
@@ -127,11 +153,18 @@ export class VendorService {
       });
       await this.vendorsRepository.save(vendor);
     } catch (e) {
+      console.log(e);
       if (e.status === 409) {
         throw new ConflictException(e.response.message);
       } else {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  async deleteVendor(vendorId: string) {
+    return this.vendorsRepository.delete({
+      id: vendorId,
+    });
   }
 }

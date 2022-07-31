@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -18,7 +19,7 @@ import { VendorService } from './vendor.service';
 @Controller('vendor')
 @UseGuards(AuthGuard())
 export class VendorController {
-  constructor(private readonly vendorService: VendorService) { }
+  constructor(private readonly vendorService: VendorService) {}
   @Get()
   @HttpCode(HttpStatus.OK)
   getVendor(
@@ -33,14 +34,12 @@ export class VendorController {
   getAllParentVendor(@GetUser() getUser): Promise<Vendor[]> {
     return this.vendorService.findAllParent(getUser.id);
   }
-  
+
   @Get('/:vendorId')
   @HttpCode(HttpStatus.OK)
   getVendorById(@Param('vendorId') vendorId: string): Promise<Vendor> {
     return this.vendorService.findVendorByVendorId(vendorId);
   }
-
- 
 
   @Get('/child/:parentId')
   @HttpCode(HttpStatus.OK)
@@ -54,7 +53,15 @@ export class VendorController {
     @Body() createVendordto: CreateVendorDto,
     @GetUser() getUser,
   ): Promise<void> {
+    console.log('Test');
     createVendordto.userId = getUser.id;
+
     return this.vendorService.createVendor(createVendordto);
+  }
+
+  @Delete('/:vendorId')
+  @HttpCode(HttpStatus.OK)
+  deleteVendor(@Param('vendorId') vendorId) {
+    return this.vendorService.deleteVendor(vendorId);
   }
 }
