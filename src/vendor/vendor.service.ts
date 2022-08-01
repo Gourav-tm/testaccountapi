@@ -13,7 +13,7 @@ export class VendorService {
   constructor(
     @InjectRepository(Vendor) private vendorsRepository: Repository<Vendor>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
   async findAll(query, userId): Promise<{ data; count }> {
     const take = query.take || 20;
     const skip = query.skip || 0;
@@ -97,6 +97,7 @@ export class VendorService {
       .createQueryBuilder('vendor')
       .select(['vendor.parentId', 'vendor.name'])
       .where('vendor.parentId IS NOT NULL')
+      .orWhere('vendor.isRoot = 0')
       .andWhere('vendor.userId = :userId', { userId })
       .distinct(true)
       .printSql()
@@ -136,7 +137,15 @@ export class VendorService {
       if (existingVendor) {
         throw new ConflictException('Vendor name is already exist');
       }
-
+      let isRoot = false;
+      const countRecords = await this.vendorsRepository.find({
+        where: {
+          userId
+        },
+      });
+      if (countRecords.length > 0) {
+        isRoot = true;
+      }
       const vendor = this.vendorsRepository.create({
         name,
         parentId: parentVendorId,
@@ -150,6 +159,7 @@ export class VendorService {
         zipCode,
         userId,
         creationTime,
+        isRoot
       });
       await this.vendorsRepository.save(vendor);
     } catch (e) {

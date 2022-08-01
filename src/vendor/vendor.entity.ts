@@ -82,4 +82,7 @@ export class Vendor extends BaseEntity {
   @ManyToOne(() => Vendor, (service) => service.parentId)
   @JoinColumn({ name: 'parentId' })
   parent: Vendor;
+
+  @Column({default:false})
+  isRoot:boolean;
 }
