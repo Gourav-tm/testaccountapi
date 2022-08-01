@@ -8,16 +8,23 @@ import {
   AfterInsert,
   BaseEntity,
   Column,
+  DataSource,
   Entity,
+  EventSubscriber,
+  getConnection,
+  getManager,
+  InsertEvent,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  Repository,
 } from 'typeorm';
 
 @Entity()
+@EventSubscriber()
 export class Vendor extends BaseEntity {
- 
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -86,8 +93,17 @@ export class Vendor extends BaseEntity {
   @JoinColumn({ name: 'parentId' })
   parent: Vendor;
 
-  @Column({default:false})
-  isRoot:boolean;
+  @Column({ default: false })
+  isRoot: boolean;
 
- 
+ /*  @AfterInsert()
+  async updateParentId(event: InsertEvent<Vendor>) {
+    console.log(this.id)
+
+    let objVendor = new Vendor();
+    objVendor.parentId = this.id;
+    objVendor.id = this.id;
+    console.log(event);
+    await event.manager.getRepository(Vendor).save(objVendor);
+  } */
 }

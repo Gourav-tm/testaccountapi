@@ -96,7 +96,7 @@ export class VendorService {
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
-      .select(['vendor.parentId', 'vendor.name','vendor.id'])
+      .select(['vendor.parentId', 'vendor.name','vendor.id','vendor.isRoot'])
       .where('vendor.parentId IS NOT NULL')
       .andWhere('vendor.userId = :userId', { userId })
       .distinct(true)
