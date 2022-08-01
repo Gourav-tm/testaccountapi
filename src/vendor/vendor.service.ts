@@ -13,7 +13,7 @@ export class VendorService {
   constructor(
     @InjectRepository(Vendor) private vendorsRepository: Repository<Vendor>,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
   async findAll(query, userId): Promise<{ data; count }> {
     const take = query.take || 20;
     const skip = query.skip || 0;
@@ -41,7 +41,7 @@ export class VendorService {
         'user.username',
       ])
       .where('vendor.userId =:userId', { userId })
-      
+
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
@@ -96,11 +96,10 @@ export class VendorService {
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
-      .select(['vendor.parentId', 'vendor.name','vendor.id','vendor.isRoot'])
+      .select(['vendor.parentId', 'vendor.name', 'vendor.id', 'vendor.isRoot'])
       .where('vendor.parentId IS NOT NULL')
       .andWhere('vendor.userId = :userId', { userId })
       .distinct(true)
-      .printSql()
       .getRawMany();
   }
 
@@ -140,7 +139,7 @@ export class VendorService {
       let isRoot = false;
       const countRecords = await this.vendorsRepository.find({
         where: {
-          userId
+          userId,
         },
       });
       if (countRecords.length > 0) {
@@ -159,9 +158,16 @@ export class VendorService {
         zipCode,
         userId,
         creationTime,
-        isRoot
+        isRoot,
       });
       await this.vendorsRepository.save(vendor);
+      console.log('Vendor', vendor);
+      if (isRoot === false)
+        await this.vendorsRepository.save({
+          ...vendor,
+          id: vendor.id,
+          parentId: vendor.id,
+        });
     } catch (e) {
       console.log(e);
       if (e.status === 409) {

@@ -10,6 +10,8 @@ import {
 } from 'class-validator';
 
 export class CommonVendorProject {
+  id: string;
+
   @IsString()
   @MinLength(1)
   @MaxLength(200)

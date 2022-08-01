@@ -1,30 +1,20 @@
-import { createConnection } from 'mysql2';
 import { User } from 'src/auth/user.entity';
 import { City } from 'src/city/city.entity';
 import { Client } from 'src/client/client.entity';
 import { Country } from 'src/country/country.entity';
 import { State } from 'src/state/state.entity';
 import {
-  AfterInsert,
-  BaseEntity,
+  BeforeInsert,
   Column,
-  DataSource,
   Entity,
-  EventSubscriber,
-  getConnection,
-  getManager,
-  InsertEvent,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
-  Repository,
 } from 'typeorm';
 
 @Entity()
-@EventSubscriber()
-export class Vendor extends BaseEntity {
-
+export class Vendor {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -96,14 +86,8 @@ export class Vendor extends BaseEntity {
   @Column({ default: false })
   isRoot: boolean;
 
- /*  @AfterInsert()
-  async updateParentId(event: InsertEvent<Vendor>) {
-    console.log(this.id)
-
-    let objVendor = new Vendor();
-    objVendor.parentId = this.id;
-    objVendor.id = this.id;
-    console.log(event);
-    await event.manager.getRepository(Vendor).save(objVendor);
-  } */
+  @BeforeInsert()
+  updateDate() {
+    this.updationTime = new Date().toDateString();
+  }
 }
