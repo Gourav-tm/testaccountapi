@@ -136,14 +136,14 @@ export class VendorService {
       if (existingVendor) {
         throw new ConflictException('Vendor name is already exist');
       }
-      let isRoot = false;
+      let isRoot = true;
       const countRecords = await this.vendorsRepository.find({
         where: {
           userId,
         },
       });
       if (countRecords.length > 0) {
-        isRoot = true;
+        isRoot = false;
       }
       const vendor = this.vendorsRepository.create({
         name,
@@ -162,7 +162,7 @@ export class VendorService {
       });
       await this.vendorsRepository.save(vendor);
       console.log('Vendor', vendor);
-      if (isRoot === false)
+      if (isRoot === true)
         await this.vendorsRepository.save({
           ...vendor,
           id: vendor.id,
