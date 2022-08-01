@@ -41,6 +41,7 @@ export class VendorService {
         'user.username',
       ])
       .where('vendor.userId =:userId', { userId })
+      
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
@@ -95,9 +96,8 @@ export class VendorService {
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
-      .select(['vendor.parentId', 'vendor.name'])
+      .select(['vendor.parentId', 'vendor.name','vendor.id'])
       .where('vendor.parentId IS NOT NULL')
-      .orWhere('vendor.isRoot = 0')
       .andWhere('vendor.userId = :userId', { userId })
       .distinct(true)
       .printSql()

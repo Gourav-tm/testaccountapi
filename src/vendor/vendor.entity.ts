@@ -1,9 +1,11 @@
+import { createConnection } from 'mysql2';
 import { User } from 'src/auth/user.entity';
 import { City } from 'src/city/city.entity';
 import { Client } from 'src/client/client.entity';
 import { Country } from 'src/country/country.entity';
 import { State } from 'src/state/state.entity';
 import {
+  AfterInsert,
   BaseEntity,
   Column,
   Entity,
@@ -15,6 +17,7 @@ import {
 
 @Entity()
 export class Vendor extends BaseEntity {
+ 
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -85,4 +88,6 @@ export class Vendor extends BaseEntity {
 
   @Column({default:false})
   isRoot:boolean;
+
+ 
 }
