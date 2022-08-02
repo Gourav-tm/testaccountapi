@@ -1,3 +1,4 @@
+import { Account } from 'src/account/account.entity';
 import { User } from 'src/auth/user.entity';
 import { City } from 'src/city/city.entity';
 import { Client } from 'src/client/client.entity';
@@ -48,8 +49,10 @@ export class Vendor {
   @Column()
   zipCode: string;
 
+
+  
   @Column()
-  userId: string;
+  accountId: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   creationTime: Date;
@@ -77,7 +80,7 @@ export class Vendor {
 
   @OneToOne(() => User, (cli) => cli.id)
   @JoinColumn()
-  user: User;
+  account: Account;
 
   @ManyToOne(() => Vendor, (service) => service.parentId)
   @JoinColumn({ name: 'parentId' })

@@ -14,7 +14,7 @@ export class VendorService {
     @InjectRepository(Vendor) private vendorsRepository: Repository<Vendor>,
     private readonly dataSource: DataSource,
   ) {}
-  async findAll(query, userId): Promise<{ data; count }> {
+  async findAll(query, accountId): Promise<{ data; count }> {
     const take = query.take || 20;
     const skip = query.skip || 0;
 
@@ -40,7 +40,7 @@ export class VendorService {
         'city.name',
         'user.username',
       ])
-      .where('vendor.userId =:userId', { userId })
+      .where('vendor.accountId =:accountId', { accountId })
 
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
@@ -91,14 +91,14 @@ export class VendorService {
       .getOne();
   }
 
-  async findAllParent(userId): Promise<Vendor[]> {
-    console.log(userId);
+  async findAllParent(accountId): Promise<Vendor[]> {
+    console.log(accountId);
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
       .select(['vendor.parentId', 'vendor.name', 'vendor.id', 'vendor.isRoot'])
       .where('vendor.parentId IS NOT NULL')
-      .andWhere('vendor.userId = :userId', { userId })
+      .andWhere('vendor.accountId = :accountId', { accountId })
       .distinct(true)
       .getRawMany();
   }
@@ -124,7 +124,7 @@ export class VendorService {
       stateId,
       cityId,
       zipCode,
-      userId,
+      accountId,
       creationTime,
     } = createVendorDto;
     try {
@@ -139,7 +139,7 @@ export class VendorService {
       let isRoot = true;
       const countRecords = await this.vendorsRepository.find({
         where: {
-          userId,
+          accountId,
         },
       });
       if (countRecords.length > 0) {
@@ -156,12 +156,11 @@ export class VendorService {
         stateId,
         cityId,
         zipCode,
-        userId,
+        accountId,
         creationTime,
         isRoot,
       });
       await this.vendorsRepository.save(vendor);
-      console.log('Vendor', vendor);
       if (isRoot === true)
         await this.vendorsRepository.save({
           ...vendor,

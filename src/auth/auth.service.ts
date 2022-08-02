@@ -59,7 +59,8 @@ export class AuthService {
   }
 
   async createUser(authCredentialDto: AuthCredentialDto): Promise<void> {
-    const { username, password } = authCredentialDto;
+    const { username, password, accountId,updationTime,
+      creationTime } = authCredentialDto;
     try {
       const existingUser = await this.usersRepository.findOne({
         where: [{ username: username }],
@@ -75,6 +76,9 @@ export class AuthService {
       const user = this.usersRepository.create({
         username,
         password: hashPassword,
+        accountId,
+        updationTime,
+        creationTime
       });
 
       await this.usersRepository.save(user);

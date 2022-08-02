@@ -13,4 +13,16 @@ export class AuthCredentialDto {
     message: 'Password is too week',
   })
   password: string;
+
+  accountId:string;
+
+  
+  creationTime: Date;
+
+  updationTime: Date;
+
+  createdBy: string;
+
+  updatedBy: string;
+
 }

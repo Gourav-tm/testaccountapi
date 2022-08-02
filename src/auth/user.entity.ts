@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -10,4 +10,31 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column()
+  accountId: string;
+
+  
+  @Column()
+  creationTime: Date;
+
+  @Column()
+  createdBy: string;
+
+  @Column()
+  updationTime: Date;
+
+  @Column()
+  updatedBy: string;
+
+  @BeforeInsert()
+  updateCreationTime() {
+      this.creationTime = new Date();
+      this.updationTime = new Date();
+  }
+
+  @BeforeUpdate()
+  updateUpdationTime() {
+      this.updationTime = new Date();
+  }
 }

@@ -53,8 +53,8 @@ export class VendorController {
     @Body() createVendordto: CreateVendorDto,
     @GetUser() getUser,
   ): Promise<void> {
-    console.log('Test');
-    createVendordto.userId = getUser.id;
+    console.log('Test', getUser);
+    createVendordto.accountId = getUser.accountId;
 
     return this.vendorService.createVendor(createVendordto);
   }
