@@ -10,7 +10,6 @@ export class CountryController {
   @Get()
   @UseGuards(AuthGuard())
   getAllCountries(@GetUser() getUser) {
-    console.log(getUser);
     return this.countryService.findAll();
   }
 }

@@ -78,7 +78,7 @@ export class Vendor {
   @JoinColumn()
   city: City;
 
-  @OneToOne(() => User, (cli) => cli.id)
+  @OneToOne(() => Account, (cli) => cli.id)
   @JoinColumn()
   account: Account;
 

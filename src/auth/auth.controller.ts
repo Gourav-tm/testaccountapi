@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth-credentials.dto';
@@ -19,6 +19,7 @@ export class AuthController {
     return this.authService.createUser(authCredentialDto);
   }
   @Post('/signin')
+  @HttpCode(HttpStatus.OK)
   signin(
     @Body() authCredentialDto: AuthCredentialDto,
   ): Promise<{ accessToken }> {

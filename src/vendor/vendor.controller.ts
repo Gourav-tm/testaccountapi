@@ -26,7 +26,7 @@ export class VendorController {
     @Query() pageOptionsDto: { take; skip },
     @GetUser() getUser,
   ): Promise<{ data; count }> {
-    return this.vendorService.findAll(pageOptionsDto, getUser.id);
+    return this.vendorService.findAll(pageOptionsDto, getUser.accountId);
   }
 
   @Get('/parent')

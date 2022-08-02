@@ -34,25 +34,23 @@ export class VendorService {
         'country.id',
         'state.id',
         'city.id',
-        'user.id',
+        'account.id',
         'country.name',
         'state.name',
         'city.name',
-        'user.username',
+        'account.name',
       ])
       .where('vendor.accountId =:accountId', { accountId })
-
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
-      .leftJoin('vendor.user', 'user')
+      .leftJoin('vendor.account', 'account')
       .leftJoinAndSelect('vendor.parent', 'vendor as v2')
       .take(take)
       .skip(skip)
       .orderBy('vendor.name', 'ASC')
       .cache(true)
       .getManyAndCount();
-
     return {
       data: result,
       count: total,
@@ -76,23 +74,22 @@ export class VendorService {
         'country.id',
         'state.id',
         'city.id',
-        'user.id',
+        'account.id',
         'country.name',
         'state.name',
         'city.name',
-        'user.username',
+        'account.name',
       ])
       .where('vendor.id =:vendorId', { vendorId })
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
-      .leftJoin('vendor.user', 'user')
+      .leftJoin('vendor.account', 'account')
       .leftJoinAndSelect('vendor.parent', 'vendor as v2')
       .getOne();
   }
 
   async findAllParent(accountId): Promise<Vendor[]> {
-    console.log(accountId);
     return await this.dataSource
       .getRepository(Vendor)
       .createQueryBuilder('vendor')
