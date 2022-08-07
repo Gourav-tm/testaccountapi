@@ -67,4 +67,6 @@ export class CommonVendorProject {
   updationTime: Date = new Date();
 
   accountId: string;
+
+  createdBy: string;
 }

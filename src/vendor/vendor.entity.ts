@@ -49,8 +49,9 @@ export class Vendor {
   @Column()
   zipCode: string;
 
+  @Column()
+  createdBy: string;
 
-  
   @Column()
   accountId: string;
 
@@ -85,6 +86,11 @@ export class Vendor {
   @ManyToOne(() => Vendor, (service) => service.parentId)
   @JoinColumn({ name: 'parentId' })
   parent: Vendor;
+
+
+  @OneToOne(() => User, (cli) => cli.id)
+  @JoinColumn({ name: 'createdBy' })
+  user: User;
 
   @Column({ default: false })
   isRoot: boolean;

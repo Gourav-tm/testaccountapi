@@ -39,12 +39,15 @@ export class VendorService {
         'state.name',
         'city.name',
         'account.name',
+        'user.username',
+        'user.id'
       ])
       .where('vendor.accountId =:accountId', { accountId })
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
       .leftJoin('vendor.account', 'account')
+      .leftJoin('vendor.user', 'user')
       .leftJoinAndSelect('vendor.parent', 'vendor as v2')
       .take(take)
       .skip(skip)
@@ -79,12 +82,15 @@ export class VendorService {
         'state.name',
         'city.name',
         'account.name',
+        'user.username',
+        'user.id'
       ])
       .where('vendor.id =:vendorId', { vendorId })
       .leftJoin('vendor.country', 'country')
       .leftJoin('vendor.state', 'state')
       .leftJoin('vendor.city', 'city')
       .leftJoin('vendor.account', 'account')
+      .leftJoin('vendor.user', 'user')
       .leftJoinAndSelect('vendor.parent', 'vendor as v2')
       .getOne();
   }
@@ -123,6 +129,8 @@ export class VendorService {
       zipCode,
       accountId,
       creationTime,
+      createdBy,
+      
     } = createVendorDto;
     try {
       const existingVendor = await this.vendorsRepository.findOne({
@@ -156,6 +164,7 @@ export class VendorService {
         accountId,
         creationTime,
         isRoot,
+        createdBy
       });
       await this.vendorsRepository.save(vendor);
       if (isRoot === true)

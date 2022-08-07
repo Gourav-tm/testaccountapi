@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Client } from './client.entity';
 import { CreateClientDto } from './dto/client-create.dto';
 
@@ -12,14 +12,98 @@ import { CreateClientDto } from './dto/client-create.dto';
 export class ClientService {
   constructor(
     @InjectRepository(Client) private clientRepository: Repository<Client>,
-  ) {}
+    private readonly dataSource: DataSource
+  ) { }
 
-  async findAll(): Promise<Client[]> {
-    return this.clientRepository.find({
-      relations: ['vendor', 'parentVendor'],
-    });
+  async findAll(query, accountId): Promise<{ data; count }> {
+    const take = query.take || 20;
+    const skip = query.skip || 0;
+    const [data, count] = await this.dataSource
+      .getRepository(Client)
+      .createQueryBuilder('client')
+      .select(['client.id',
+        'client.name',
+        'client.emailId',
+        'client.websiteUrl',
+        'client.address1',
+        'client.address2',
+        'client.zipCode',
+        'client.boardNumber',
+        'country.id',
+        'country.name',
+        'state.id',
+        'state.name',
+        'city.id',
+        'city.name',
+        'user.id',
+        'user.username',
+        'account.id',
+        'account.name',
+        'vendor.id',
+        'vendor.name',
+        'parentVendor.id',
+        'parentVendor.name',
+        'client.creationTime',
+        'client.updationTime'
+      ])
+      .where('vendor.accountId =:accountId', { accountId })
+      .leftJoin('client.user', 'user')
+      .leftJoin('client.country', 'country')
+      .leftJoin('client.state', 'state')
+      .leftJoin('client.city', 'city')
+      .leftJoin('client.account', 'account')
+      .leftJoin('client.vendor', 'vendor')
+      .leftJoin('client.parentVendor', 'parentVendor')
+      .take(take)
+      .skip(skip)
+      .orderBy('vendor.name', 'ASC')
+      .getManyAndCount();
+
+    return {
+      data: data,
+      count
+    }
   }
 
+  async findClientById(id): Promise<Client> {
+    return await this.dataSource
+      .getRepository(Client)
+      .createQueryBuilder('client')
+      .select(['client.id',
+        'client.name',
+        'client.emailId',
+        'client.websiteUrl',
+        'client.address1',
+        'client.address2',
+        'client.zipCode',
+        'client.boardNumber',
+        'country.id',
+        'country.name',
+        'state.id',
+        'state.name',
+        'city.id',
+        'city.name',
+        'user.id',
+        'user.username',
+        'account.id',
+        'account.name',
+        'vendor.id',
+        'vendor.name',
+        'parentVendor.id',
+        'parentVendor.name',
+        'client.creationTime',
+        'client.updationTime'
+      ])
+      .where('client.id =:id', { id })
+      .leftJoin('client.user', 'user')
+      .leftJoin('client.country', 'country')
+      .leftJoin('client.state', 'state')
+      .leftJoin('client.city', 'city')
+      .leftJoin('client.account', 'account')
+      .leftJoin('client.vendor', 'vendor')
+      .leftJoin('client.parentVendor', 'parentVendor')
+      .getOne();
+  }
   async createClient(createClientDto: CreateClientDto): Promise<void> {
     const {
       parentVendorId,
@@ -34,6 +118,9 @@ export class ClientService {
       zipCode,
       boardNumber,
       vendorId,
+      creationTime,
+      createdBy,
+      accountId
     } = createClientDto;
 
     try {
@@ -47,7 +134,7 @@ export class ClientService {
       }
 
       const client = this.clientRepository.create({
-        parentVendorId: parentVendorId,
+        parentVendorId,
         name,
         emailId,
         websiteUrl,
@@ -59,6 +146,9 @@ export class ClientService {
         zipCode,
         boardNumber,
         vendorId,
+        creationTime,
+        createdBy,
+        accountId
       });
       this.clientRepository.save(client);
     } catch (e) {
@@ -69,5 +159,11 @@ export class ClientService {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  async deleteClient(id) {
+    return this.clientRepository.delete({
+      id
+    });
   }
 }

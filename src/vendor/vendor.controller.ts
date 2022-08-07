@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateVendorDto } from './dto/vendor-create.dto';
 import { Vendor } from './vendor.entity';
 import { VendorService } from './vendor.service';
@@ -53,14 +54,14 @@ export class VendorController {
     @Body() createVendordto: CreateVendorDto,
     @GetUser() getUser,
   ): Promise<void> {
-    console.log('Test', getUser);
     createVendordto.accountId = getUser.accountId;
-
+    createVendordto.createdBy = getUser.id;
     return this.vendorService.createVendor(createVendordto);
   }
 
   @Delete('/:vendorId')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RolesGuard)
   deleteVendor(@Param('vendorId') vendorId) {
     return this.vendorService.deleteVendor(vendorId);
   }
