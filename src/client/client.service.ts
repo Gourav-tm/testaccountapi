@@ -104,6 +104,46 @@ export class ClientService {
       .leftJoin('client.parentVendor', 'parentVendor')
       .getOne();
   }
+
+  async findClientByVendorId(vendorId): Promise<Client[]> {
+    return await this.dataSource
+      .getRepository(Client)
+      .createQueryBuilder('client')
+      .select(['client.id',
+        'client.name',
+        'vendor.id',
+        'vendor.name',
+        'parentVendor.id',
+        'parentVendor.name',
+        'client.creationTime',
+        'client.updationTime'
+      ])
+      .where('client.vendorId =:vendorId', { vendorId })
+      .leftJoin('client.vendor', 'vendor')
+      .leftJoin('client.parentVendor', 'parentVendor')
+      .getMany();
+  }
+
+  async findClientByParentVendorId(parentVendorId): Promise<Client[]> {
+    return await this.dataSource
+      .getRepository(Client)
+      .createQueryBuilder('client')
+      .select(['client.id',
+        'client.name',
+        'vendor.id',
+        'vendor.name',
+        'parentVendor.id',
+        'parentVendor.name',
+        'client.creationTime',
+        'client.updationTime'
+      ])
+      .where('client.parentVendorId =:parentVendorId', { parentVendorId })
+      .leftJoin('client.vendor', 'vendor')
+      .leftJoin('client.parentVendor', 'parentVendor')
+      .getMany();
+  }
+
+
   async createClient(createClientDto: CreateClientDto): Promise<void> {
     const {
       parentVendorId,

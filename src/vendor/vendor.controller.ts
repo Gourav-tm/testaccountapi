@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Query,
+  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,6 +20,7 @@ import { VendorService } from './vendor.service';
 
 @Controller('vendor')
 @UseGuards(AuthGuard())
+@SetMetadata('roles', ['admin'])
 export class VendorController {
   constructor(private readonly vendorService: VendorService) {}
   @Get()
@@ -61,6 +63,7 @@ export class VendorController {
 
   @Delete('/:vendorId')
   @HttpCode(HttpStatus.OK)
+  @SetMetadata('roles',['admin','superadmin'])
   @UseGuards(RolesGuard)
   deleteVendor(@Param('vendorId') vendorId) {
     return this.vendorService.deleteVendor(vendorId);

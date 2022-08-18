@@ -17,6 +17,7 @@ import { City } from './city/city.entity';
 import { LoggerModule } from 'nestjs-pino';
 import { AccountModule } from './account/account.module';
 import { Account } from './account/account.entity';
+import { Project } from './project/project.entity';
 const levels = {
   emerg: 80,
   alert: 70,
@@ -69,7 +70,7 @@ const levels = {
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_NAME'),
-          entities: [User, Vendor, Client, Country, State, City, Account],
+          entities: [User, Vendor, Client, Country, State, City, Account, Project],
         };
       },
     }),

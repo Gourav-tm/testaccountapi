@@ -15,6 +15,20 @@ export class ClientController {
     return this.clientService.findAll(pageOptionsDto, getUser.accountId);
   }
 
+  @Get('/vendor/:vendorId')
+  getClientByVendorId(@Param('vendorId') vendorId:string): Promise<Client[]> {
+    console.log(vendorId);
+    return this.clientService.findClientByVendorId(vendorId);
+  }
+
+
+  @Get('/parentvendor/:parentVendorId')
+  getClientByParentVendorId(@Param('parentVendorId') parentVendorId:string): Promise<Client[]> {
+    console.log(parentVendorId);
+    return this.clientService.findClientByParentVendorId(parentVendorId);
+  }
+
+
   @Get('/:id')
   getClientById(@Param('id') id:string): Promise<Client> {
     console.log(id);

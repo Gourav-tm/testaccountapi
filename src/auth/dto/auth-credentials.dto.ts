@@ -1,4 +1,5 @@
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsEnum, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { USER_ROLE } from '../user.entity';
 
 export class AuthCredentialDto {
   @IsString()
@@ -25,4 +26,6 @@ export class AuthCredentialDto {
 
   updatedBy: string;
 
+  
+  role:USER_ROLE;
 }

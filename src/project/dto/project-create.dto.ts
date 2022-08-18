@@ -1,10 +1,8 @@
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsString, MaxLength, MinDate, MinLength } from 'class-validator';
+import { CommonVendorProject } from 'src/shared/commonvendorproject';
 
-export class ProjectCreateDto {
-  @IsString()
-  @MinLength(1)
-  @MaxLength(100)
-  title: string;
+export class CreateProjectDto extends CommonVendorProject {
 
   @IsString()
   @MinLength(1)
@@ -13,11 +11,28 @@ export class ProjectCreateDto {
 
   @IsString()
   @MinLength(1)
-  @MaxLength(128)
   accountManagerId: string;
 
   @IsString()
-  @MinLength(1)
-  @MaxLength(128)
+  @IsNotEmpty()
+  clientId: string;
+
+
+  @IsString()
+  @IsNotEmpty()
   vendorId: string;
+
+  parentVendorId: string;
+
+
+  @Type(() => Date)
+  @IsDate()
+  @IsNotEmpty()
+  startDate: Date;
+
+
+  @IsDate()
+  @Type(() => Date)
+  
+  endDate: Date;
 }
