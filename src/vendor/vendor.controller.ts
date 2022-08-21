@@ -63,8 +63,6 @@ export class VendorController {
 
   @Delete('/:vendorId')
   @HttpCode(HttpStatus.OK)
-  @SetMetadata('roles',['admin','superadmin'])
-  @UseGuards(RolesGuard)
   deleteVendor(@Param('vendorId') vendorId) {
     return this.vendorService.deleteVendor(vendorId);
   }
