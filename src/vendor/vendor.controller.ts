@@ -35,7 +35,7 @@ export class VendorController {
   @Get('/parent')
   @HttpCode(HttpStatus.OK)
   getAllParentVendor(@GetUser() getUser): Promise<Vendor[]> {
-    return this.vendorService.findAllParent(getUser.id);
+    return this.vendorService.findAllParent(getUser.accountId);
   }
 
   @Get('/:vendorId')
